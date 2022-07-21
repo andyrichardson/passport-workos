@@ -1,6 +1,6 @@
 {
   "name": "passport-workos",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Passport strategy for WorkOS SSO",
   "source": "src/index.ts",
   "main": "dist/index.js",
