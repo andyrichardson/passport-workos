@@ -46,6 +46,7 @@ jobs:
           path: ./node_modules
           key: nodemodules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
       - run: npm run test -- --coverage
+      - uses: codecov/codecov-action@v3
 
   typecheck:
     needs: install
