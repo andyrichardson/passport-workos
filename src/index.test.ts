@@ -209,7 +209,7 @@ describe("on callback", () => {
     });
   });
 
-  describe.only("on user verify fn error", () => {
+  describe("on user verify fn error", () => {
     beforeEach(() => {
       verify.mockImplementation((_, __, ___, user, cb) => cb("error"));
     });
