@@ -103,5 +103,7 @@ jobs:
           name: build-output
       - name: Version package.json
         run: npm --no-git-tag-version version ${{steps.tag.outputs.tag}}
+      - name: Create .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
       - name: Publish
         run: npm publish
