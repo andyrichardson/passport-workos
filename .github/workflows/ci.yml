@@ -35,6 +35,11 @@ jobs:
           path: ./node_modules
           key: nodemodules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
       - run: npm run build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: dist
 
   test:
     needs: install
@@ -88,10 +93,15 @@ jobs:
     runs-on: ubuntu-latest
     container: "node:16"
     steps:
+      - uses: actions/checkout@v2
       - name: Get tag
         id: tag
         uses: dawidd6/action-get-tag@v1
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
       - name: Version package.json
-        run: npm version ${{steps.tag.outputs.tag}}
+        run: npm --no-git-tag-version version ${{steps.tag.outputs.tag}}
       - name: Publish
         run: npm publish
