@@ -101,6 +101,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-output
+          path: dist
       - name: Version package.json
         run: npm --no-git-tag-version version ${{steps.tag.outputs.tag}}
       - name: Create .npmrc
