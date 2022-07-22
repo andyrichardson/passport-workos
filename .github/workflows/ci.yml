@@ -32,6 +32,32 @@ jobs:
           key: nodemodules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
       - run: npm run build
 
+  test:
+    needs: install
+    runs-on: ubuntu-latest
+    container: "node:16"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Restore node modules
+        uses: actions/cache@v2
+        with:
+          path: ./node_modules
+          key: nodemodules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+      - run: npm run test -- --coverage
+
+  typecheck:
+    needs: install
+    runs-on: ubuntu-latest
+    container: "node:16"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Restore node modules
+        uses: actions/cache@v2
+        with:
+          path: ./node_modules
+          key: nodemodules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+      - run: $(npm bin)/tsc --noEmit
+
   check-formatting:
     name: check formatting
     needs: install

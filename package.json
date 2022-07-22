@@ -13,7 +13,8 @@
     "workos"
   ],
   "scripts": {
-    "build": "microbundle --target node"
+    "build": "microbundle --target node",
+    "test": "jest"
   },
   "files": [
     "src/**",
