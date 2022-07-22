@@ -2,6 +2,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - v*
   pull_request:
 
 name: CI
@@ -74,3 +76,22 @@ jobs:
           path: ./node_modules
           key: nodemodules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
       - run: $(npm bin)/prettier --check .
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs:
+      - install
+      - build
+      - test
+      - check-formatting
+      - typecheck
+    runs-on: ubuntu-latest
+    container: "node:16"
+    steps:
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+      - name: Version package.json
+        run: npm version ${{steps.tag.outputs.tag}}
+      - name: Publish
+        run: npm publish
