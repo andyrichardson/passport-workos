@@ -12,7 +12,6 @@
     "passport",
     "workos"
   ],
-  "main": "dist/index.js",
   "scripts": {
     "build": "microbundle --target node"
   },
