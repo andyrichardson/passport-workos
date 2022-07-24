@@ -1,6 +1,18 @@
-# Passport WorkOS
+<h1 align="center">Passport Workos</h1>
+<p align="center"><i>A passport strategy for <a href="https://workos.com/docs/reference/sso">WorkOS SSO</a>.</i></p>
 
-A passport strategy for [WorkOS SSO](https://workos.com/docs/reference/sso).
+<p align="center">
+  <img src="https://img.shields.io/github/checks-status/andyrichardson/passport-workos/master.svg" />
+  <a href="https://npmjs.com/package/passport-workos">
+    <img src="https://img.shields.io/github/package-json/v/andyrichardson/passport-workos.svg" alt="version" />
+  </a>
+  <a href="https://bundlephobia.com/result?p=passport-workos">
+    <img src="https://img.shields.io/bundlephobia/minzip/passport-workos.svg" alt="size" />
+  </a>
+  <a href="https://codecov.io/gh/andyrichardson/passport-workos">
+    <img src="https://img.shields.io/codecov/c/github/andyrichardson/passport-workos.svg" alt="coverage">
+  </a>
+</p>
 
 ## Installation
 

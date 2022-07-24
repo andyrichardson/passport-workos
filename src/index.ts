@@ -6,7 +6,6 @@ export type WorkOSSSOStrategyOptions = {
   clientID: string;
   clientSecret: string;
   callbackURL: string;
-  redirectURI: string;
 };
 
 type WorkOSSSOStrategyVerifyFn = (req: Request, accessToken: string, refreshToken: string | undefined, profile: Profile, cb: (err: unknown, user: Profile, info: any) => void) => void;
@@ -48,7 +47,7 @@ export class WorkOSSSOStrategy extends Strategy {
         connection,
         domain: domain || email?.slice(email.indexOf("@") + 1),
         clientID: this.options.clientID,
-        redirectURI: this.options.callbackURL || options.redirectURI,
+        redirectURI: options.redirectURI || this.options.callbackURL,
         ...options,
       });
       this.redirect(url);
@@ -58,27 +57,37 @@ export class WorkOSSSOStrategy extends Strategy {
   }
 
   private async _loginCallback(req: Request, _options: AuthenticateOptions) {
-    const { profile, access_token } = await this.client.sso.getProfileAndToken({
-      code: req.query.code as string,
-      clientID: this.options.clientID,
-    });
+    try {
+      const { profile, access_token } =
+        await this.client.sso.getProfileAndToken({
+          code: req.query.code as string,
+          clientID: this.options.clientID,
+        });
 
-    this.verify(
-      req,
-      access_token,
-      undefined /* no refresh token */,
-      profile,
-      (err: any, user: any, info: any) => {
-        if (err) {
-          return this.error(err);
+      this.verify(
+        req,
+        access_token,
+        undefined /* no refresh token */,
+        profile,
+        (err: any, user: any, info: any) => {
+          if (err) {
+            return this.error(err);
+          }
+
+          if (!user) {
+            return this.fail("no user");
+          }
+
+          return this.success(user, info);
         }
-
-        if (!user) {
-          return this.fail("no user");
-        }
-
-        return this.success(user, info);
+      );
+    } catch (err: any) {
+      // TODO - get confirmation from WorkOS on status code for invalid "code" argument
+      if (true /* err.statusCode === 403 */) {
+        return this.fail(err.text);
       }
-    );
+
+      this.error(err.text);
+    }
   }
 }
