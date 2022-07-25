@@ -34,8 +34,13 @@ export class WorkOSSSOStrategy extends Strategy {
 
   private _loginAttempt(req: Request, options: AuthenticateOptions) {
     try {
-      const { connection, domain, email, organization } = req.query as Record<string, string>;
-      if ([connection, domain, email, organization].every((a) => a === undefined)) {
+      const { connection, domain, email, organization } = req.query as Record<
+        string,
+        string
+      >;
+      if (
+        [connection, domain, email, organization].every((a) => a === undefined)
+      ) {
         throw Error(
           "One of 'connection', 'domain', 'organization' and/or 'email' are required"
         );
@@ -86,7 +91,6 @@ export class WorkOSSSOStrategy extends Strategy {
       if (true /* err.statusCode === 403 */) {
         return this.fail(err.text);
       }
-
     }
   }
 }
