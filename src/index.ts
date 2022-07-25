@@ -8,7 +8,13 @@ export type WorkOSSSOStrategyOptions = {
   callbackURL: string;
 };
 
-type WorkOSSSOStrategyVerifyFn = (req: Request, accessToken: string, refreshToken: string | undefined, profile: Profile, cb: (err: unknown, user: Profile, info: any) => void) => void;
+type WorkOSSSOStrategyVerifyFn = (
+  req: Request,
+  accessToken: string,
+  refreshToken: string | undefined,
+  profile: Profile,
+  cb: (err: unknown, user: Profile, info: any) => void
+) => void;
 type AuthenticateOptions = Partial<
   Parameters<WorkOS["sso"]["getAuthorizationURL"]>[0]
 >;
@@ -18,7 +24,10 @@ export class WorkOSSSOStrategy extends Strategy {
   private options: WorkOSSSOStrategyOptions;
   private verify: WorkOSSSOStrategyVerifyFn;
 
-  constructor(opts: WorkOSSSOStrategyOptions, verify: WorkOSSSOStrategyVerifyFn) {
+  constructor(
+    opts: WorkOSSSOStrategyOptions,
+    verify: WorkOSSSOStrategyVerifyFn
+  ) {
     super();
     this.options = opts;
     this.verify = verify;
@@ -86,8 +95,6 @@ export class WorkOSSSOStrategy extends Strategy {
       if (true /* err.statusCode === 403 */) {
         return this.fail(err.text);
       }
-
-      this.error(err.text);
     }
   }
 }
