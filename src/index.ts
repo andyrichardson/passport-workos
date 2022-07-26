@@ -1,23 +1,33 @@
 import { Strategy } from "passport";
 import { Request } from "express";
-import WorkOS from "@workos-inc/node";
+import WorkOS, { Profile } from "@workos-inc/node";
 
-type Options = {
+export type WorkOSSSOStrategyOptions = {
   clientID: string;
   clientSecret: string;
   callbackURL: string;
 };
-type Verify = any;
+
+type WorkOSSSOStrategyVerifyFn = (
+  req: Request,
+  accessToken: string,
+  refreshToken: string | undefined,
+  profile: Profile,
+  cb: (err: unknown, user: Profile, info: any) => void
+) => void;
 type AuthenticateOptions = Partial<
   Parameters<WorkOS["sso"]["getAuthorizationURL"]>[0]
 >;
 
 export class WorkOSSSOStrategy extends Strategy {
   private client: WorkOS;
-  private options: Options;
-  private verify: Verify;
+  private options: WorkOSSSOStrategyOptions;
+  private verify: WorkOSSSOStrategyVerifyFn;
 
-  constructor(opts: Options, verify: Verify) {
+  constructor(
+    opts: WorkOSSSOStrategyOptions,
+    verify: WorkOSSSOStrategyVerifyFn
+  ) {
     super();
     this.options = opts;
     this.verify = verify;
@@ -85,8 +95,6 @@ export class WorkOSSSOStrategy extends Strategy {
       if (true /* err.statusCode === 403 */) {
         return this.fail(err.text);
       }
-
-      this.error(err.text);
     }
   }
 }
