@@ -82,6 +82,32 @@ describe("on login", () => {
     });
   });
 
+  describe("on organization", () => {
+    const organization = "1234";
+    const url = `/workos/authorize?organization=${organization}`;
+
+    it("calls workos api with organization", async () => {
+      await supertest(app).get(url);
+      expect(getAuthorizationURL).toBeCalledTimes(1);
+      expect(getAuthorizationURL).toBeCalledWith(
+        expect.objectContaining({
+          organization,
+          clientID,
+          redirectURI: callbackURL,
+          state: "...",
+        })
+      );
+    });
+
+    it("redirects to login url", async () => {
+      const res = await supertest(app).get(url);
+      expect(res.statusCode).toEqual(302);
+      expect(res.headers.location).toMatchInlineSnapshot(
+        `"https://workos.com/fake-auth-url"`
+      );
+    });
+  });
+
   describe("on domain", () => {
     const domain = "mydomain.org";
     const url = `/workos/authorize?domain=${domain}`;
