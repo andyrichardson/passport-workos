@@ -200,13 +200,55 @@ describe("on callback", () => {
   describe("on invalid authorization code", () => {
     beforeEach(() => {
       getProfileAndToken.mockImplementation(() =>
-        Promise.reject({ statusCode: 403, text: "Invalid authorization code" })
+        Promise.reject({
+          response: {
+            status: 400,
+            data: {
+              error: "invalid_grant",
+              error_message: "The grant code provided is invalid",
+            },
+          },
+        })
       );
     });
 
     it("passport.js throws unauthorized error", async () => {
       const res = await supertest(app).get(url);
       expect(res.statusCode).toEqual(401);
+    });
+  });
+
+  describe("on workos error", () => {
+    beforeEach(() => {
+      getProfileAndToken.mockImplementation(() =>
+        Promise.reject({
+          response: {
+            status: 400,
+            data: {
+              error: "invalid_client_secret",
+              error_message: "The client secret provided is invalid",
+            },
+          },
+        })
+      );
+    });
+
+    it("passport.js throws unauthorized error", async () => {
+      const res = await supertest(app).get(url);
+      expect(res.statusCode).toEqual(500);
+    });
+  });
+
+  describe("on unexpected error", () => {
+    beforeEach(() => {
+      getProfileAndToken.mockImplementation(() =>
+        Promise.reject("Something went wrong")
+      );
+    });
+
+    it("passport.js throws unauthorized error", async () => {
+      const res = await supertest(app).get(url);
+      expect(res.statusCode).toEqual(500);
     });
   });
 

@@ -97,10 +97,11 @@ export class WorkOSSSOStrategy extends Strategy {
         }
       );
     } catch (err: any) {
-      // TODO - get confirmation from WorkOS on status code for invalid "code" argument
-      if (true /* err.statusCode === 403 */) {
-        return this.fail(err.text);
+      if (err?.response?.data?.error === "invalid_grant") {
+        return this.fail(err.response.data.error_description);
       }
+
+      return this.error(err);
     }
   }
 }
