@@ -20,7 +20,7 @@
 npm i passport-workos passport @workos-inc/node
 ```
 
-## Usage
+## Setup
 
 Import the strategy.
 
@@ -39,21 +39,21 @@ passport.use(
       clientSecret: process.env.WORKOS_API_KEY,
       callbackURL: "http://localhost:3000/auth/workos/callback",
     },
+    // Verify function
     (req, accessToken, refreshToken, profile, done) => {
       return done(undefined, profile);
-      // console.log(args);
     }
   )
 );
 ```
 
-Add a callback handler for your login route.
+Add a route for redirecting to WorkOS login.
 
 ```ts
-app.get("/login", passport.authenticate("workos"));
+app.get("/auth/workos/login", passport.authenticate("workos"));
 ```
 
-Add a callback handler for your callback route.
+Add a route for code authorization callbacks.
 
 ```ts
 app.get(
@@ -67,8 +67,21 @@ app.get(
 );
 ```
 
-## Login route
+## Consumption
 
-The login route takes any of the arguments [specified here](https://workos.com/docs/reference/sso/authorize/get).
+### Login
 
-There's an additional `email` parameter which the strategy will, in turn, derive the `domain` value.
+The login route will redirect to a [WorkOS OAuth 2.0 authorization URL](https://workos.com/docs/reference/sso/authorize/get). When redirecting to this route, be sure to include one of the [supported query parameters](https://workos.com/docs/reference/sso/authorize/get#authorize-get-parameters)
+
+> **Note**
+> An additional `email` query parameter is supported which will extract the `domain` and forward it to WorkOS
+
+**Example**
+
+```
+location.href = "/auth/workos/login?domain=gmail.com"
+```
+
+### Callback
+
+This will be called by WorkOS after a successful login. Be sure to [configure the redirect URI](https://workos.com/docs/sso/guide/set-redirect-uri) with WorkOS.
