@@ -4,7 +4,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/checks-status/andyrichardson/passport-workos/master.svg" />
   <a href="https://npmjs.com/package/passport-workos">
-    <img src="https://img.shields.io/github/package-json/v/andyrichardson/passport-workos.svg" alt="version" />
+    <img src="https://img.shields.io/npm/v/passport-workos.svg" alt="version" />
   </a>
   <a href="https://bundlephobia.com/result?p=passport-workos">
     <img src="https://img.shields.io/bundlephobia/minzip/passport-workos.svg" alt="size" />
