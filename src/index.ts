@@ -8,13 +8,14 @@ export type WorkOSSSOStrategyOptions = {
   callbackURL: string;
 };
 
-type WorkOSSSOStrategyVerifyFn = (
+export type WorkOSSSOStrategyVerifyFn = (
   req: Request,
   accessToken: string,
   refreshToken: string | undefined,
   profile: Profile,
   cb: (err: unknown, user: Profile, info: any) => void
 ) => void;
+
 type AuthenticateOptions = Partial<
   Parameters<WorkOS["sso"]["getAuthorizationURL"]>[0]
 >;
