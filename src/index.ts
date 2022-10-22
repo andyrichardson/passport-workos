@@ -45,15 +45,13 @@ export class WorkOSSSOStrategy extends Strategy {
 
   private _loginAttempt(req: Request, options: AuthenticateOptions) {
     try {
-      const { connection, domain, email, organization } = req.query as Record<
+      const { connection, organization, provider } = req.query as Record<
         string,
         string
       >;
-      if (
-        [connection, domain, email, organization].every((a) => a === undefined)
-      ) {
+      if ([connection, organization, provider].every((a) => a === undefined)) {
         throw Error(
-          "One of 'connection', 'domain', 'organization' and/or 'email' are required"
+          "One of 'connection', 'organization', or 'provider' is required"
         );
       }
 
@@ -61,7 +59,7 @@ export class WorkOSSSOStrategy extends Strategy {
         ...req.body,
         connection,
         organization,
-        domain: domain || email?.slice(email.indexOf("@") + 1),
+        provider,
         clientID: this.options.clientID,
         redirectURI: options.redirectURI || this.options.callbackURL,
         ...options,

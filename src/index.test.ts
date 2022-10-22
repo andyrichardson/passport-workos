@@ -1,5 +1,5 @@
+import { ConnectionType } from "@workos-inc/node";
 import express from "express";
-import expressSession from "express-session";
 import passport from "passport";
 import supertest from "supertest";
 import { WorkOSSSOStrategy } from "./";
@@ -108,55 +108,57 @@ describe("on login", () => {
     });
   });
 
-  describe("on domain", () => {
-    const domain = "mydomain.org";
-    const url = `/workos/authorize?domain=${domain}`;
+  describe("on provider", () => {
+    describe("with 'GoogleOAuth'", () => {
+      const provider = ConnectionType.GoogleOAuth;
+      const url = `/workos/authorize?provider=${provider}`;
 
-    it("calls workos api with domain", async () => {
-      await supertest(app).get(url);
-      expect(getAuthorizationURL).toBeCalledTimes(1);
-      expect(getAuthorizationURL).toBeCalledWith(
-        expect.objectContaining({
-          domain,
-          clientID,
-          redirectURI: callbackURL,
-          state: "...",
-        })
-      );
+      it("calls workos api with provider", async () => {
+        await supertest(app).get(url);
+        expect(getAuthorizationURL).toBeCalledTimes(1);
+        expect(getAuthorizationURL).toBeCalledWith(
+          expect.objectContaining({
+            provider,
+            clientID,
+            redirectURI: callbackURL,
+            state: "...",
+          })
+        );
+      });
+
+      it("redirects to login url", async () => {
+        const res = await supertest(app).get(url);
+        expect(res.statusCode).toEqual(302);
+        expect(res.headers.location).toMatchInlineSnapshot(
+          `"https://workos.com/fake-auth-url"`
+        );
+      });
     });
 
-    it("redirects to login url", async () => {
-      const res = await supertest(app).get(url);
-      expect(res.statusCode).toEqual(302);
-      expect(res.headers.location).toMatchInlineSnapshot(
-        `"https://workos.com/fake-auth-url"`
-      );
-    });
-  });
+    describe("with 'MicrosoftOAuth'", () => {
+      const provider = ConnectionType.MicrosoftOAuth;
+      const url = `/workos/authorize?provider=${provider}`;
 
-  describe("on email", () => {
-    const email = "user@mydomain.org";
-    const url = `/workos/authorize?email=${email}`;
+      it("calls workos api with provider", async () => {
+        await supertest(app).get(url);
+        expect(getAuthorizationURL).toBeCalledTimes(1);
+        expect(getAuthorizationURL).toBeCalledWith(
+          expect.objectContaining({
+            provider,
+            clientID,
+            redirectURI: callbackURL,
+            state: "...",
+          })
+        );
+      });
 
-    it("calls workos api with domain", async () => {
-      await supertest(app).get(url);
-      expect(getAuthorizationURL).toBeCalledTimes(1);
-      expect(getAuthorizationURL).toBeCalledWith(
-        expect.objectContaining({
-          domain: email.substring(email.indexOf("@") + 1),
-          clientID,
-          redirectURI: callbackURL,
-          state: "...",
-        })
-      );
-    });
-
-    it("redirects to login url", async () => {
-      const res = await supertest(app).get(url);
-      expect(res.statusCode).toEqual(302);
-      expect(res.headers.location).toMatchInlineSnapshot(
-        `"https://workos.com/fake-auth-url"`
-      );
+      it("redirects to login url", async () => {
+        const res = await supertest(app).get(url);
+        expect(res.statusCode).toEqual(302);
+        expect(res.headers.location).toMatchInlineSnapshot(
+          `"https://workos.com/fake-auth-url"`
+        );
+      });
     });
   });
 });

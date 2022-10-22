@@ -71,17 +71,8 @@ app.get(
 
 ### Login
 
-The login route will redirect to a [WorkOS OAuth 2.0 authorization URL](https://workos.com/docs/reference/sso/authorize/get). When redirecting to this route, be sure to include one of the [supported query parameters](https://workos.com/docs/reference/sso/authorize/get#authorize-get-parameters)
-
-> **Note**
-> An additional `email` query parameter is supported which will extract the `domain` and forward it to WorkOS
-
-**Example**
-
-```
-location.href = "/auth/workos/login?domain=gmail.com"
-```
+The login route will redirect to a [WorkOS OAuth 2.0 authorization URL](https://workos.com/docs/reference/sso/get-authorization-url). When redirecting to this route, be sure to include one of the [supported query parameters](https://workos.com/docs/reference/sso/get-authorization-url)
 
 ### Callback
 
-This will be called by WorkOS after a successful login. Be sure to [configure the redirect URI](https://workos.com/docs/sso/guide/set-redirect-uri) with WorkOS.
+This will be called by WorkOS after a successful login. Be sure to [configure the redirect URI](https://workos.com/docs/reference/sso/redirect-uri) with WorkOS.
