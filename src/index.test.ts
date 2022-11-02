@@ -108,6 +108,58 @@ describe("on login", () => {
     });
   });
 
+  describe("on domain", () => {
+    const domain = "mydomain.org";
+    const url = `/workos/authorize?domain=${domain}`;
+
+    it("calls workos api with domain", async () => {
+      await supertest(app).get(url);
+      expect(getAuthorizationURL).toBeCalledTimes(1);
+      expect(getAuthorizationURL).toBeCalledWith(
+        expect.objectContaining({
+          domain,
+          clientID,
+          redirectURI: callbackURL,
+          state: "...",
+        })
+      );
+    });
+
+    it("redirects to login url", async () => {
+      const res = await supertest(app).get(url);
+      expect(res.statusCode).toEqual(302);
+      expect(res.headers.location).toMatchInlineSnapshot(
+        `"https://workos.com/fake-auth-url"`
+      );
+    });
+  });
+
+  describe("on email", () => {
+    const email = "user@mydomain.org";
+    const url = `/workos/authorize?email=${email}`;
+
+    it("calls workos api with domain", async () => {
+      await supertest(app).get(url);
+      expect(getAuthorizationURL).toBeCalledTimes(1);
+      expect(getAuthorizationURL).toBeCalledWith(
+        expect.objectContaining({
+          domain: email.substring(email.indexOf("@") + 1),
+          clientID,
+          redirectURI: callbackURL,
+          state: "...",
+        })
+      );
+    });
+
+    it("redirects to login url", async () => {
+      const res = await supertest(app).get(url);
+      expect(res.statusCode).toEqual(302);
+      expect(res.headers.location).toMatchInlineSnapshot(
+        `"https://workos.com/fake-auth-url"`
+      );
+    });
+  });
+
   describe("on provider", () => {
     describe("with 'GoogleOAuth'", () => {
       const provider = ConnectionType.GoogleOAuth;
