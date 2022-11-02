@@ -1,5 +1,5 @@
+import { ConnectionType } from "@workos-inc/node";
 import express from "express";
-import expressSession from "express-session";
 import passport from "passport";
 import supertest from "supertest";
 import { WorkOSSSOStrategy } from "./";
@@ -157,6 +157,60 @@ describe("on login", () => {
       expect(res.headers.location).toMatchInlineSnapshot(
         `"https://workos.com/fake-auth-url"`
       );
+    });
+  });
+
+  describe("on provider", () => {
+    describe("with 'GoogleOAuth'", () => {
+      const provider = ConnectionType.GoogleOAuth;
+      const url = `/workos/authorize?provider=${provider}`;
+
+      it("calls workos api with provider", async () => {
+        await supertest(app).get(url);
+        expect(getAuthorizationURL).toBeCalledTimes(1);
+        expect(getAuthorizationURL).toBeCalledWith(
+          expect.objectContaining({
+            provider,
+            clientID,
+            redirectURI: callbackURL,
+            state: "...",
+          })
+        );
+      });
+
+      it("redirects to login url", async () => {
+        const res = await supertest(app).get(url);
+        expect(res.statusCode).toEqual(302);
+        expect(res.headers.location).toMatchInlineSnapshot(
+          `"https://workos.com/fake-auth-url"`
+        );
+      });
+    });
+
+    describe("with 'MicrosoftOAuth'", () => {
+      const provider = ConnectionType.MicrosoftOAuth;
+      const url = `/workos/authorize?provider=${provider}`;
+
+      it("calls workos api with provider", async () => {
+        await supertest(app).get(url);
+        expect(getAuthorizationURL).toBeCalledTimes(1);
+        expect(getAuthorizationURL).toBeCalledWith(
+          expect.objectContaining({
+            provider,
+            clientID,
+            redirectURI: callbackURL,
+            state: "...",
+          })
+        );
+      });
+
+      it("redirects to login url", async () => {
+        const res = await supertest(app).get(url);
+        expect(res.statusCode).toEqual(302);
+        expect(res.headers.location).toMatchInlineSnapshot(
+          `"https://workos.com/fake-auth-url"`
+        );
+      });
     });
   });
 });
