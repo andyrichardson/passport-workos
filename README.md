@@ -71,7 +71,32 @@ app.get(
 
 ### Login
 
-The login route will redirect to a [WorkOS OAuth 2.0 authorization URL](https://workos.com/docs/reference/sso/get-authorization-url). When redirecting to this route, be sure to include one of the [supported query parameters](https://workos.com/docs/reference/sso/get-authorization-url)
+The login route will redirect to a [WorkOS OAuth 2.0 authorization URL](https://workos.com/docs/reference/sso/get-authorization-url). When redirecting to this route, be sure to include one of the [supported query parameters](https://workos.com/docs/reference/sso/get-authorization-url).
+
+#### Login with email
+
+In the likely case where the connection can't be derived by the requesting client, middleware is advised ([see here](https://github.com/andyrichardson/passport-workos/pull/15#issuecomment-1300526716)).
+
+```tsx
+// Client entrypoint
+app.use("/auth/email/login", (req, res, next) => {
+  const email = req.query.email;
+  // Your custom function to get connection for given email
+  const connection = await getConnectionForEmail(email);
+
+  // Redirect to passport strategy with supported args
+  res.redirect(
+    url.format({
+      pathname: "/auth/workos/login",
+      query: { ...req.query, connection, login_hint: email },
+    })
+  );
+});
+
+app.use("/auth/workos/login", passport.authenticate("workos"), (req, res) => {
+  /* ... */
+});
+```
 
 ### Callback
 
