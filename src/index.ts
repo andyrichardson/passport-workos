@@ -6,6 +6,7 @@ export type WorkOSSSOStrategyOptions = {
   clientID: string;
   clientSecret: string;
   callbackURL: string;
+  clientOptions?: ConstructorParameters<typeof WorkOS>[1];
 };
 
 export type WorkOSSSOStrategyVerifyFn = (
@@ -32,7 +33,7 @@ export class WorkOSSSOStrategy extends Strategy {
     super();
     this.options = opts;
     this.verify = verify;
-    this.client = new WorkOS(opts.clientSecret);
+    this.client = new WorkOS(opts.clientSecret, opts.clientOptions);
   }
 
   public authenticate(req: Request, options: AuthenticateOptions) {
